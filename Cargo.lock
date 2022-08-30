@@ -538,6 +538,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "near-ecommerce-payment"
+version = "0.1.0"
+dependencies = [
+ "near-sdk",
+]
+
+[[package]]
 name = "near-primitives"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1159,13 +1166,6 @@ dependencies = [
  "crunchy",
  "hex",
  "static_assertions",
-]
-
-[[package]]
-name = "uit-ecommerce-payment-rs"
-version = "0.1.0"
-dependencies = [
- "near-sdk",
 ]
 
 [[package]]

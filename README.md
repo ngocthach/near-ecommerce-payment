@@ -11,9 +11,11 @@ Actions
 
 1. Create new account in testnet
 ```
-export CONTRACT_ID=uit-payment-contract.vbidev.testnet
-export ACCOUNT_ID=vbidev.testnet
-near create $CONTRACT_ID --masterAccount $ACCOUNT_ID --initialBalance 5
+export CONTRACT_ID=near-ecommerce-payment-contract.ngocthach2020.testnet
+export ACCOUNT_ID=ngocthach2020.testnet
+near create-account $CONTRACT_ID --masterAccount $ACCOUNT_ID --initialBalance 5
+
+near view ft.vbidev.testnet ft_balance_of '{"account_id":"ngocthach2020.testnet"}'
 ```
 
 2. Build contract
@@ -23,11 +25,15 @@ cargo test & build.sh
 
 3. Deploy and init contract
 ```
-near deploy --wasmFile out/contract.wasm --accountId $CONTRACT_ID--initFunction new '{"owner_id": "$ACCOUNT_ID"}'
+near deploy --wasmFile out/contract.wasm near-ecommerce-payment-contract.ngocthach2020.testnet --initFunction new --initArgs '{"owner_id": "ngocthach2020.testnet", "ft_contract_id": "ft.vbidev.testnet"}' --accountId ngocthach2020.testnet 
 ```
 
 4. Pay order
 ```
+near call ft.vbidev.testnet storage_deposit '{"account_id": "near-ecommerce-payment-contract.ngocthach2020.testnet"}' --accountId ngocthach2020.testnet --deposit 0.01
+
+near call ft.vbidev.testnet ft_transfer_call '{"receiver_id": "near-ecommerce-payment-contract.ngocthach2020.testnet", "amount": "10000000000000000000000000000", "msg": "{\"order_id\": \"order_1\", \"order_amount\": \"1000000000000000000000000000\"}"}' --accountId ngocthach2020.testnet --depositYocto 1 --gas 50000000000000
+
 near call $CONTRACT_ID pay_order '{"order_id": "order_1", "order_amount": "1000000000000000000000000"}' --accountId $ACCOUNT_ID --deposit 1
 ```
 
@@ -41,16 +47,20 @@ Ex response:
 ```
 {
   order_id: 'order_1',
-  payer_id: 'vbidev.testnet',
-  amount: 1e+24,
-  received_amount: 2e+24,
+  payer_id: 'ngocthach2020.testnet',
+  payment_method: 'FungibleToken',
+  amount: 1e+27,
+  received_amount: 1e+28,
   is_completed: true,
   is_refund: false,
-  created_at: 1661439327890786600
+  created_at: 1661876654547708200
 }
 ```
 
 
 # Install cargo-watch to debug
-cargo install cargo-watch
-cargo watch -x check -x test -x run
+- cargo install cargo-watch
+- cargo watch -x check -x test -x run
+
+# FT token
+https://vbi-ui.vercel.app/faucet
