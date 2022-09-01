@@ -69,3 +69,4 @@ near call $CONTRACT_ID refund '{"order_id": "order_1"}' --accountId $ACCOUNT_ID 
 
 # FT token
 https://vbi-ui.vercel.app/faucet
+https://github.com/nearvndev/vbi-ft

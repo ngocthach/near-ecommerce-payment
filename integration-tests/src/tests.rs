@@ -3,7 +3,7 @@ use serde_json::json;
 use workspaces::prelude::*;
 use workspaces::{network::Sandbox, testnet, sandbox, Account, Contract, Worker};
 
-const WASM_FILEPATH: &str = "../../out/contract.wasm";
+const WASM_FILEPATH: &str = "../contract/out/contract.wasm";
 
 #[tokio::main]
 async fn main() -> anyhow::Result<()> {
