@@ -19,7 +19,7 @@ node_modules
 /build
 
 # rust
-target/*
+contract/target
 integration-tests/rs/target
 
 # misc

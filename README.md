@@ -1,71 +1,113 @@
-# Payment Smart contract
+near-blank-project
+==================
 
-Application Design: [Ecommerce Payment user flow](https://drive.google.com/file/d/1ilBGG7hfkx7r6KzQy_6cEiHJqQlcSf6w/view?usp=sharing)
+This app was initialized with [create-near-app]
 
-Prerequires
-- NodeJS
-- Near CLI
-- Rust/Rustup and Wasm
+npx create-near-app \
+  first_app \
+  --contract rust \
+  --frontend react \
+  --tests rust \
+  --install
 
-Actions
 
-1. Create new account in testnet
-```
-export CONTRACT_ID=near-ecommerce-payment-contract.ngocthach2020.testnet
-export ACCOUNT_ID=ngocthach2020.testnet
-near create-account $CONTRACT_ID --masterAccount $ACCOUNT_ID --initialBalance 5
+Quick Start
+===========
 
-near view ft.vbidev.testnet ft_balance_of '{"account_id":"ngocthach2020.testnet"}'
-```
+If you haven't installed dependencies during setup:
 
-2. Build contract
-```
-cargo test & build.sh
-```
+    npm run deps-install
 
-3. Deploy and init contract
-```
-near deploy --wasmFile out/contract.wasm near-ecommerce-payment-contract.ngocthach2020.testnet --initFunction new --initArgs '{"owner_id": "ngocthach2020.testnet", "ft_contract_id": "ft.vbidev.testnet"}' --accountId ngocthach2020.testnet 
-```
 
-4. Pay order
-```
-near call ft.vbidev.testnet storage_deposit '{"account_id": "near-ecommerce-payment-contract.ngocthach2020.testnet"}' --accountId ngocthach2020.testnet --deposit 0.01
+Build and deploy your contract to TestNet with a temporary dev account:
 
-near call ft.vbidev.testnet ft_transfer_call '{"receiver_id": "near-ecommerce-payment-contract.ngocthach2020.testnet", "amount": "10000000000000000000000000000", "msg": "{\"order_id\": \"order_1\", \"order_amount\": \"1000000000000000000000000000\"}"}' --accountId ngocthach2020.testnet --depositYocto 1 --gas 50000000000000
+    npm run deploy
 
-near call $CONTRACT_ID pay_order '{"order_id": "order_1", "order_amount": "1000000000000000000000000"}' --accountId $ACCOUNT_ID --deposit 1
-```
+Test your contract:
 
-5. Get order
+    npm test
 
-```
-near view $CONTRACT_ID get_order '{"order_id": "order_1"}'
-```
+If you have a frontend, run `npm start`. This will run a dev server.
 
-Ex response:
-```
-{
-  order_id: 'order_1',
-  payer_id: 'ngocthach2020.testnet',
-  payment_method: 'FungibleToken',
-  amount: 1e+27,
-  received_amount: 1e+28,
-  is_completed: true,
-  is_refund: false,
-  created_at: 1661876654547708200
-}
-```
 
-6. Refund
-```
-near call $CONTRACT_ID refund '{"order_id": "order_1"}' --accountId $ACCOUNT_ID --gas 50000000000000
+Exploring The Code
+==================
 
-```
+1. The smart-contract code lives in the `/contract` folder. See the README there for
+   more info. In blockchain apps the smart contract is the "backend" of your app.
+2. The frontend code lives in the `/frontend` folder. `/frontend/index.html` is a great
+   place to start exploring. Note that it loads in `/frontend/index.js`,
+   this is your entrypoint to learn how the frontend connects to the NEAR blockchain.
+3. Test your contract: `npm test`, this will run the tests in `integration-tests` directory.
 
-# Install cargo-watch to debug
-- cargo install cargo-watch
-- cargo watch -x check -x test -x run
 
-# FT token
-https://vbi-ui.vercel.app/faucet
+Deploy
+======
+
+Every smart contract in NEAR has its [own associated account][NEAR accounts]. 
+When you run `npm run deploy`, your smart contract gets deployed to the live NEAR TestNet with a temporary dev account.
+When you're ready to make it permanent, here's how:
+
+
+Step 0: Install near-cli (optional)
+-------------------------------------
+
+[near-cli] is a command line interface (CLI) for interacting with the NEAR blockchain. It was installed to the local `node_modules` folder when you ran `npm install`, but for best ergonomics you may want to install it globally:
+
+    npm install --global near-cli
+
+Or, if you'd rather use the locally-installed version, you can prefix all `near` commands with `npx`
+
+Ensure that it's installed with `near --version` (or `npx near --version`)
+
+
+Step 1: Create an account for the contract
+------------------------------------------
+
+Each account on NEAR can have at most one contract deployed to it. If you've already created an account such as `your-name.testnet`, you can deploy your contract to `near-blank-project.your-name.testnet`. Assuming you've already created an account on [NEAR Wallet], here's how to create `near-blank-project.your-name.testnet`:
+
+1. Authorize NEAR CLI, following the commands it gives you:
+
+      near login
+
+2. Create a subaccount (replace `YOUR-NAME` below with your actual account name):
+
+      near create-account near-blank-project.YOUR-NAME.testnet --masterAccount YOUR-NAME.testnet
+
+Step 2: deploy the contract
+---------------------------
+
+Use the CLI to deploy the contract to TestNet with your account ID.
+Replace `PATH_TO_WASM_FILE` with the `wasm` that was generated in `contract` build directory.
+
+    near deploy --accountId near-blank-project.YOUR-NAME.testnet --wasmFile PATH_TO_WASM_FILE
+
+
+Step 3: set contract name in your frontend code
+-----------------------------------------------
+
+Modify the line in `src/config.js` that sets the account name of the contract. Set it to the account id you used above.
+
+    const CONTRACT_NAME = process.env.CONTRACT_NAME || 'near-blank-project.YOUR-NAME.testnet'
+
+
+
+Troubleshooting
+===============
+
+On Windows, if you're seeing an error containing `EPERM` it may be related to spaces in your path. Please see [this issue](https://github.com/zkat/npx/issues/209) for more details.
+
+
+  [create-near-app]: https://github.com/near/create-near-app
+  [Node.js]: https://nodejs.org/en/download/package-manager/
+  [jest]: https://jestjs.io/
+  [NEAR accounts]: https://docs.near.org/concepts/basics/account
+  [NEAR Wallet]: https://wallet.testnet.near.org/
+  [near-cli]: https://github.com/near/near-cli
+  [gh-pages]: https://github.com/tschaub/gh-pages
+
+
+
+Exercise
+
+- To do list app
