@@ -20,7 +20,7 @@ node_modules
 
 # rust
 contract/target
-integration-tests/rs/target
+integration-tests/target
 
 # misc
 .DS_Store
