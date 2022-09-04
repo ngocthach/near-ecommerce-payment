@@ -11,6 +11,11 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 near-sdk = "4.0.0"
 uint = { version = "0.9.3", default-features = false }
+serde = { version = "1.0.144", optional = true, features = ["derive"] }
+
+[features]
+default = ["std"]
+std = [ "serde" ]
 
 [profile.release]
 codegen-units = 1

@@ -29,10 +29,34 @@ async fn main() -> anyhow::Result<()> {
       .await?
       .json()?;
 
+  test_get_order(&owner,&contract, &worker).await?;
   test_pay_order(&owner, &user, &contract, &worker).await?;
 
   Ok(())
 }
+
+async fn test_get_order(
+  caller: &Account,
+  contract: &Contract,
+  worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+  let order: serde_json::Value = caller
+      .call(&worker, contract.id(), "get_order")
+      .args_json(json!({"order_id": "order_1"}))?
+      .transact()
+      .await?
+      .json()?;
+
+  let expected = json!(
+        {
+            "account_id": ""
+        }
+    );
+  assert_eq!(order, expected);
+  println!("Order information: {:?} ✅", order);
+  Ok(())
+}
+
 
 async fn test_pay_order(
   caller: &Account,
