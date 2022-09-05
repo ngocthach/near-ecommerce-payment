@@ -1,0 +1,1 @@
+/home/ngocthach/blockchain/near-ecommerce-payment/contract/target/debug/libnear_ecommerce_payment.so: /home/ngocthach/blockchain/near-ecommerce-payment/contract/src/ft_contract.rs /home/ngocthach/blockchain/near-ecommerce-payment/contract/src/lib.rs /home/ngocthach/blockchain/near-ecommerce-payment/contract/src/order.rs

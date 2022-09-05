@@ -1,0 +1,1 @@
+/home/ngocthach/blockchain/near-ecommerce-payment/contract/payment/target/wasm32-unknown-unknown/release/near_ecommerce_payment.wasm: /home/ngocthach/blockchain/near-ecommerce-payment/contract/payment/src/ft_contract.rs /home/ngocthach/blockchain/near-ecommerce-payment/contract/payment/src/lib.rs /home/ngocthach/blockchain/near-ecommerce-payment/contract/payment/src/order.rs

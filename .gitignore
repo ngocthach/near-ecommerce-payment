@@ -19,7 +19,8 @@ node_modules
 /build
 
 # rust
-contract/target
+contract/payment/target
+contract/ft/target
 integration-tests/target
 
 # misc
