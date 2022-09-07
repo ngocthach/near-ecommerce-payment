@@ -52,6 +52,20 @@ async fn main() -> anyhow::Result<()> {
       .transact()
       .await?;
 
+  let deposit_amount = parse_near!("1 N");
+  // let amount: u128 = 1_000_000_000_000_000_000_000_000;
+  let amount: u128 = 1000_000_000_000_000_000_000;
+  ft_contract
+      .call(&worker, "storage_deposit")
+      .args_json(serde_json::json!({
+            "account_id": ft_contract.id()
+        }))?
+      //.deposit(U128(deposit_amount).0)
+      .deposit(10000000000000000000000)
+      .gas(near_units::parse_gas!("300 T") as u64)
+      .transact()
+      .await?;
+
   // Init contract
   payment_contract
       .call(&worker, "new")
@@ -63,7 +77,8 @@ async fn main() -> anyhow::Result<()> {
       .await?;
 
   // Begin test
-  test_pay_order(&user, &payment_contract, &worker).await?;
+  // test_pay_order(&user, &payment_contract, &worker).await?;
+  test_pay_order_by_fungible_token(&user, &ft_contract, &payment_contract, &worker).await?;
 
   Ok(())
 }
@@ -104,6 +119,42 @@ async fn test_pay_order(
       .view_account(&worker)
       .await?
       .balance;
+
+  assert_eq!(res_order.payer_id.to_string(), user.id().to_string());
+  assert_eq!(res_order.amount, order_amount);
+  println!("      Passed ✅  get_order");
+
+  Ok(())
+}
+
+
+async fn test_pay_order_by_fungible_token(
+  user: &Account,
+  ft_contract: &Contract,
+  contract: &Contract,
+  worker: &Worker<Sandbox>,
+) -> anyhow::Result<()> {
+  let deposit_amount = parse_near!("1000000 N");
+  let order_amount = parse_near!("1 N");
+
+  user.
+      call(&worker, ft_contract.id(), "ft_transfer_call")
+      .args_json(json!({
+            "receiver_id": contract.id(),
+            "amount": U128(deposit_amount),
+            "msg": format!("{{\"order_id\": \"order_2\", \"order_amount\": \"{:?}\"}}", U128(order_amount))
+        }))?
+      .deposit(order_amount)
+      .transact()
+      .await?;
+
+  println!("      Passed ✅  pay_order");
+
+  let res_order: OrderDetail = user.call(worker, contract.id(), "get_order")
+      .args_json(json!({"order_id": "order_2"}))?
+      .transact()
+      .await?
+      .json()?;
 
   assert_eq!(res_order.payer_id.to_string(), user.id().to_string());
   assert_eq!(res_order.amount, order_amount);
